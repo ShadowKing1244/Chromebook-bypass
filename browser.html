@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schoology Browser</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+        .browser-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+        }
+        .schoology-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .search-bar {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70%;
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            outline: none;
+            z-index: 1;
+            background-color: white;
+        }
+        .search-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="browser-container">
+        <input type="text" id="searchInput" class="search-bar" placeholder="Search in Schoology or Bing">
+        <button class="search-button" onclick="search()">Search</button>
+        <iframe class="schoology-iframe" src="https://www.schoology.com"></iframe>
+    </div>
+
+    <script>
+        function search() {
+            var query = document.getElementById('searchInput').value.trim();
+            if (query !== "") {
+                var searchUrl = "https://www.bing.com/search?q=" + encodeURIComponent(query);
+                loadUrlInIframe(searchUrl);
+            }
+        }
+
+        function loadUrlInIframe(url) {
+            var iframe = document.querySelector('.schoology-iframe');
+            iframe.src = url;
+        }
+    </script>
+</body>
+</html>
