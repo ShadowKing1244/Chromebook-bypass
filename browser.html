@@ -52,7 +52,7 @@
 </head>
 <body>
     <div class="browser-container">
-        <input type="text" id="searchInput" class="search-bar" placeholder="Search in Schoology or Bing">
+        <input type="text" id="searchInput" class="search-bar" placeholder="Search in Schoology or Yahoo">
         <button class="search-button" onclick="search()">Search</button>
         <iframe class="schoology-iframe" src="https://www.schoology.com"></iframe>
     </div>
@@ -61,7 +61,7 @@
         function search() {
             var query = document.getElementById('searchInput').value.trim();
             if (query !== "") {
-                var searchUrl = "https://www.bing.com/search?q=" + encodeURIComponent(query);
+                var searchUrl = "https://search.yahoo.com/search?p=" + encodeURIComponent(query);
                 loadUrlInIframe(searchUrl);
             }
         }
