@@ -77,6 +77,32 @@
         .button:hover {
             background-color: #1a8ca2;
         }
+
+        .input-group {
+            margin-bottom: 10px;
+        }
+
+        .input-group input[type="text"] {
+            width: calc(100% - 100px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .input-group button {
+            width: 100px;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #35b7c7;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .input-group button:hover {
+            background-color: #1a8ca2;
+        }
     </style>
 </head>
 <body>
@@ -87,11 +113,15 @@
         <div class="balance" id="balanceDisplay">
             Your Balance: $500.00
         </div>
+        <div class="input-group">
+            <input type="text" id="recipientCashTag" placeholder="Recipient's Cash Tag">
+            <button onclick="sendMoney()">Send Money</button>
+        </div>
         <div class="transactions" id="transactionLog">
             <!-- Transaction log will be displayed here -->
         </div>
         <div class="footer">
-            <button class="button" onclick="sendMoney()">Send Money</button>
+            <button class="button" onclick="window.location.reload();">Refresh</button>
         </div>
     </div>
 
@@ -99,6 +129,7 @@
         var balance = 500.00; // Starting balance
         var balanceDisplay = document.getElementById('balanceDisplay');
         var transactionLog = document.getElementById('transactionLog');
+        var recipientCashTagInput = document.getElementById('recipientCashTag');
 
         // Function to format currency
         function formatCurrency(amount) {
@@ -126,9 +157,15 @@
         // Function to simulate sending money
         function sendMoney() {
             var amount = Math.random() * 100 + 1; // Random amount between 1 and 100
+            var recipientCashTag = recipientCashTagInput.value.trim();
+            if (recipientCashTag === '') {
+                alert('Please enter recipient\'s Cash Tag.');
+                return;
+            }
             balance -= amount; // Deduct amount from balance
-            displayTransaction('Payment sent', -amount);
+            displayTransaction('Payment sent to ' + recipientCashTag, -amount);
             updateBalance();
+            recipientCashTagInput.value = '';
         }
 
         // Function to update balance display
@@ -136,13 +173,13 @@
             balanceDisplay.textContent = 'Your Balance: ' + formatCurrency(balance);
         }
 
-        // Increase balance every 1.5 seconds
+        // Increase balance every 30 seconds
         setInterval(function() {
             var increment = Math.random() * 10 + 1; // Random increment between 1 and 10
             balance += increment; // Increment balance
             displayTransaction('Balance increased', increment);
             updateBalance();
-        }, 1500);
+        }, 30000);
     </script>
 </body>
 </html>
