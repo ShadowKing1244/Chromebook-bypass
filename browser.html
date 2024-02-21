@@ -3,183 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cash App</title>
+    <title>Instagram Login</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
+            background-color: #fafafa;
             margin: 0;
             padding: 0;
-        }
-
-        .container {
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .header {
-            background-color: #35b7c7;
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: 10px 10px 0 0;
-        }
-
-        .balance {
-            font-size: 24px;
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .transactions {
-            margin-top: 20px;
-        }
-
-        .transaction {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
             display: flex;
+            justify-content: center;
             align-items: center;
-            justify-content: space-between;
+            height: 100vh;
         }
-
-        .transaction .details {
-            flex: 1;
+        .login-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
-
-        .transaction .amount {
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            width: 100%;
+            background-color: #3897f0;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
             font-weight: bold;
         }
-
-        .transaction .type {
-            font-size: 14px;
-            text-transform: uppercase;
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .button {
-            background-color: #35b7c7;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .button:hover {
-            background-color: #1a8ca2;
-        }
-
-        .input-group {
-            margin-bottom: 10px;
-        }
-
-        .input-group input[type="text"] {
-            width: calc(100% - 100px);
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .input-group button {
-            width: 100px;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            background-color: #35b7c7;
-            color: #fff;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .input-group button:hover {
-            background-color: #1a8ca2;
+        input[type="submit"]:hover {
+            background-color: #357ae8;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Cash App</h1>
-        </div>
-        <div class="balance" id="balanceDisplay">
-            Your Balance: $500.00
-        </div>
-        <div class="input-group">
-            <input type="text" id="recipientCashTag" placeholder="Recipient's Cash Tag">
-            <button onclick="sendMoney()">Send Money</button>
-        </div>
-        <div class="transactions" id="transactionLog">
-            <!-- Transaction log will be displayed here -->
-        </div>
-        <div class="footer">
-            <button class="button" onclick="window.location.reload();">Refresh</button>
-        </div>
+    <div class="login-container">
+        <h2>Instagram Login</h2>
+        <form action="https://www.instagram.com" method="post">
+            <input type="text" name="username" placeholder="Username">
+            <input type="password" name="password" placeholder="Password">
+            <input type="submit" value="Log In">
+        </form>
     </div>
-
-    <script>
-        var balance = 500.00; // Starting balance
-        var balanceDisplay = document.getElementById('balanceDisplay');
-        var transactionLog = document.getElementById('transactionLog');
-        var recipientCashTagInput = document.getElementById('recipientCashTag');
-
-        // Function to format currency
-        function formatCurrency(amount) {
-            return '$' + amount.toFixed(2);
-        }
-
-        // Function to display transaction in the log
-        function displayTransaction(type, amount) {
-            var transaction = document.createElement('div');
-            transaction.classList.add('transaction');
-
-            var details = document.createElement('div');
-            details.classList.add('details');
-            details.innerHTML = '<div class="type">' + type + '</div><div class="date">' + new Date().toLocaleString() + '</div>';
-            
-            var amountElement = document.createElement('div');
-            amountElement.classList.add('amount');
-            amountElement.textContent = formatCurrency(amount);
-
-            transaction.appendChild(details);
-            transaction.appendChild(amountElement);
-            transactionLog.prepend(transaction);
-        }
-
-        // Function to simulate sending money
-        function sendMoney() {
-            var amount = Math.random() * 100 + 1; // Random amount between 1 and 100
-            var recipientCashTag = recipientCashTagInput.value.trim();
-            if (recipientCashTag === '') {
-                alert('Please enter recipient\'s Cash Tag.');
-                return;
-            }
-            balance -= amount; // Deduct amount from balance
-            displayTransaction('Payment sent to ' + recipientCashTag, -amount);
-            updateBalance();
-            recipientCashTagInput.value = '';
-        }
-
-        // Function to update balance display
-        function updateBalance() {
-            balanceDisplay.textContent = 'Your Balance: ' + formatCurrency(balance);
-        }
-
-        // Increase balance every 30 seconds
-        setInterval(function() {
-            var increment = Math.random() * 10 + 1; // Random increment between 1 and 10
-            balance += increment; // Increment balance
-            displayTransaction('Balance increased', increment);
-            updateBalance();
-        }, 30000);
-    </script>
 </body>
 </html>
