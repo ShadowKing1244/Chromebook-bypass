@@ -3,67 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub Browser</title>
+    <title>iMessage Chat Room with Camera</title>
     <style>
         body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-        }
-        .browser-container {
-            position: relative;
-            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             height: 100vh;
         }
-        .github-iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
+
+        .chat-container {
+            width: 400px;
+            height: 600px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
         }
-        .search-bar {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 70%;
-            padding: 10px;
-            border: 2px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-            outline: none;
-            z-index: 1;
-            background-color: white;
-        }
-        .search-button {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            padding: 10px 20px;
+
+        .chat-header {
             background-color: #007bff;
-            color: white;
-            border: none;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .chat-messages {
+            height: 450px;
+            overflow-y: scroll;
+            padding: 10px;
+        }
+
+        .message {
+            margin-bottom: 10px;
+            padding: 10px;
             border-radius: 5px;
-            font-size: 16px;
+            max-width: 70%;
+        }
+
+        .sender-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .message.sender {
+            background-color: #e5e5ea;
+            align-self: flex-start;
+        }
+
+        .message.receiver {
+            background-color: #d3f2cd;
+            align-self: flex-end;
+        }
+
+        .message-content {
+            word-wrap: break-word;
+        }
+
+        .chat-input {
+            padding: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-field {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        .send-button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
             cursor: pointer;
-            z-index: 1;
+        }
+
+        .camera-button {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        video {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 10px;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="browser-container">
-        <input type="text" id="searchInput" class="search-bar" placeholder="Enter GitHub URL">
-        <button class="search-button" onclick="navigate()">Go</button>
-        <iframe class="github-iframe" src="https://github.com"></iframe>
+    <div class="chat-container">
+        <div class="chat-header">iMessage Chat with Camera</div>
+        <div class="chat-messages" id="chat-messages"></div>
+        <div class="chat-input">
+            <input type="text" id="name-input" class="input-field" placeholder="Enter your name...">
+            <input type="text" id="message-input" class="input-field" placeholder="Type a message...">
+            <button onclick="toggleCamera()" class="camera-button">Check</button>
+            <button onclick="sendMessage()" class="send-button">Send</button>
+        </div>
+        <video id="videoElement" autoplay style="display:none;"></video>
     </div>
 
     <script>
-        function navigate() {
-            var url = document.getElementById('searchInput').value.trim();
-            if (url !== "") {
-                var iframe = document.querySelector('.github-iframe');
-                iframe.contentWindow.location.href = url;
+        var videoElement = document.getElementById('videoElement');
+        var cameraEnabled = false;
+
+        function startCamera() {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function(stream) {
+                    videoElement.srcObject = stream;
+                    videoElement.style.display = 'block';
+                    cameraEnabled = true;
+                })
+                .catch(function(error) {
+                    console.error('Error accessing the camera:', error);
+                });
+        }
+
+        function stopCamera() {
+            var stream = videoElement.srcObject;
+            var tracks = stream.getTracks();
+
+            tracks.forEach(function(track) {
+                track.stop();
+            });
+
+            videoElement.srcObject = null;
+            videoElement.style.display = 'none';
+            cameraEnabled = false;
+        }
+
+        function toggleCamera() {
+            if (cameraEnabled) {
+                stopCamera();
+            } else {
+                startCamera();
             }
+        }
+
+        function sendMessage() {
+            var nameInput = document.getElementById("name-input");
+            var messageInput = document.getElementById("message-input");
+            var name = nameInput.value.trim();
+            var message = messageInput.value.trim();
+
+            if (name !== "" && message !== "") {
+                var chatMessages = document.getElementById("chat-messages");
+                var messageDiv = document.createElement("div");
+                messageDiv.classList.add("message");
+
+                if (!nameInput.dataset.color) {
+                    nameInput.dataset.color = getRandomColor();
+                }
+                var color = nameInput.dataset.color;
+
+                messageDiv.innerHTML = `<div class="sender-name" style="color: ${color}">${name}</div>` +
+                                        `<div class="message-content">${message}</div>`;
+                chatMessages.appendChild(messageDiv);
+                messageInput.value = "";
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        }
+
+        function getRandomColor() {
+            var letters = '0123456789ABCDEF';
+            var color = '#';
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
         }
     </script>
 </body>
