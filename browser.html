@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schoology Browser</title>
+    <title>GitHub Browser</title>
     <style>
         body {
             margin: 0;
@@ -16,7 +16,7 @@
             width: 100%;
             height: 100vh;
         }
-        .schoology-iframe {
+        .github-iframe {
             width: 100%;
             height: 100%;
             border: none;
@@ -52,37 +52,17 @@
 </head>
 <body>
     <div class="browser-container">
-        <input type="text" id="searchInput" class="search-bar" placeholder="Search in Schoology">
-        <button class="search-button" onclick="search()">Search</button>
-        <iframe class="schoology-iframe" src="https://www.schoology.com"></iframe>
+        <input type="text" id="searchInput" class="search-bar" placeholder="Enter GitHub URL">
+        <button class="search-button" onclick="navigate()">Go</button>
+        <iframe class="github-iframe" src="https://github.com"></iframe>
     </div>
 
     <script>
-        function search() {
-            var query = document.getElementById('searchInput').value.trim();
-            if (query !== "") {
-                var iframe = document.querySelector('.schoology-iframe');
-                switch (query.toLowerCase()) {
-                    case "youtube":
-                        iframe.contentWindow.location.href = "https://www.youtube.com";
-                        break;
-                    case "insta":
-                    case "instagram":
-                        iframe.contentWindow.location.href = "https://www.instagram.com";
-                        break;
-                    case "netflix":
-                        iframe.contentWindow.location.href = "https://www.netflix.com";
-                        break;
-                    case "hulu":
-                        iframe.contentWindow.location.href = "https://www.hulu.com";
-                        break;
-                    case "chatgpt":
-                        iframe.contentWindow.location.href = "https://app.chatgpt.com";
-                        break;
-                    default:
-                        iframe.contentWindow.location.href = "https://www.schoology.com/search?query=" + encodeURIComponent(query);
-                        break;
-                }
+        function navigate() {
+            var url = document.getElementById('searchInput').value.trim();
+            if (url !== "") {
+                var iframe = document.querySelector('.github-iframe');
+                iframe.contentWindow.location.href = url;
             }
         }
     </script>
