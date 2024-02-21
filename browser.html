@@ -3,175 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Darkweb Livestream</title>
+    <title>Cash App</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #222;
-            color: #ff0000;
+            background-color: #f9f9f9;
             margin: 0;
             padding: 0;
         }
 
-        h1 {
-            color: #ff0000;
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background-color: #35b7c7;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .balance {
+            font-size: 24px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .transactions {
+            margin-top: 20px;
+        }
+
+        .transaction {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .transaction .details {
+            flex: 1;
+        }
+
+        .transaction .amount {
+            font-weight: bold;
+        }
+
+        .transaction .date {
+            color: #999;
+        }
+
+        .transaction .type {
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        .transaction .status {
+            font-size: 14px;
+            color: #35b7c7;
+        }
+
+        .transaction .status.pending {
+            color: #f90;
+        }
+
+        .transaction .status.failed {
+            color: #f00;
+        }
+
+        .transaction .status.completed {
+            color: #0c0;
+        }
+
+        .footer {
             text-align: center;
             margin-top: 20px;
         }
 
-        #chat-container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #111;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        #chat-messages {
-            max-height: 400px;
-            overflow-y: auto;
-            margin-bottom: 10px;
-        }
-
-        .message {
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 5px;
-            max-width: 70%;
-        }
-
-        .sender {
-            background-color: #444;
-            color: #ff0000;
-            align-self: flex-end;
-        }
-
-        .receiver {
-            background-color: #333;
-            color: #ff0000;
-            align-self: flex-start;
-        }
-
-        #video-container {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 10px;
-        }
-
-        video {
-            width: 320px;
-            height: 240px;
-            margin-right: 10px;
-            border-radius: 5px;
-            background-color: #000;
-        }
-
-        #local-video {
-            display: none;
-        }
-
-        #chat-input {
-            display: flex;
-            align-items: center;
-        }
-
-        #message-input {
-            flex: 1;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-right: 10px;
-            background-color: #222;
-            color: #ff0000;
-        }
-
-        button {
-            background-color: #007bff;
+        .button {
+            background-color: #35b7c7;
             color: #fff;
             border: none;
-            padding: 8px 16px;
+            padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.3s;
         }
 
-        button:hover {
-            background-color: #0056b3;
+        .button:hover {
+            background-color: #1a8ca2;
         }
     </style>
 </head>
 <body>
-    <h1>Darkweb Livestream</h1>
-    <div id="chat-container">
-        <div id="chat-messages"></div>
-        <div id="video-container">
-            <video id="local-video" autoplay muted></video>
-            <video id="remote-video" autoplay></video>
+    <div class="container">
+        <div class="header">
+            <h1>Cash App</h1>
         </div>
-        <div id="chat-input">
-            <input type="text" id="message-input" placeholder="Type a message...">
-            <button onclick="sendMessage()">Send</button>
+        <div class="balance">
+            Your Balance: $500.00
+        </div>
+        <div class="transactions">
+            <div class="transaction">
+                <div class="details">
+                    <div class="type">Payment received</div>
+                    <div class="date">2 hours ago</div>
+                </div>
+                <div class="amount">+$50.00</div>
+            </div>
+            <div class="transaction">
+                <div class="details">
+                    <div class="type">Payment sent</div>
+                    <div class="date">Yesterday</div>
+                </div>
+                <div class="amount">-$20.00</div>
+            </div>
+            <!-- Add more transactions here -->
+        </div>
+        <div class="footer">
+            <button class="button">Send Money</button>
         </div>
     </div>
-    <script>
-        var localVideo = document.getElementById("local-video");
-        var remoteVideo = document.getElementById("remote-video");
-        var cameraEnabled = false;
-
-        // Creepy AI message
-        var creepyMessage = "I'm watching you...";
-
-        // Show creepy message when page loads
-        displayBotMessage(creepyMessage);
-
-        // Simulate changing number of nations every 5 seconds
-        setInterval(changeNations, 5000);
-
-        function changeNations() {
-            var numNations = Math.floor(Math.random() * 100) + 1; // Random number between 1 and 100
-            var message = "Broadcasted to " + numNations + " nations";
-            displayBotMessage(message);
-        }
-
-        function sendMessage() {
-            var messageInput = document.getElementById("message-input");
-            var message = messageInput.value.trim();
-
-            if (message !== "") {
-                displayUserMessage(message);
-                messageInput.value = "";
-                // Turn on camera after user responds
-                if (!cameraEnabled) {
-                    toggleCamera();
-                }
-            }
-        }
-
-        function toggleCamera() {
-            // Mock function to simulate turning on camera
-            cameraEnabled = true;
-            localVideo.style.display = "block";
-            remoteVideo.style.display = "none";
-            console.log("Camera turned on!");
-        }
-
-        function displayUserMessage(message) {
-            var chatMessages = document.getElementById("chat-messages");
-            var messageDiv = document.createElement("div");
-            messageDiv.classList.add("message", "sender");
-            messageDiv.textContent = message;
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        function displayBotMessage(message) {
-            var chatMessages = document.getElementById("chat-messages");
-            var messageDiv = document.createElement("div");
-            messageDiv.classList.add("message", "receiver");
-            messageDiv.textContent = "Unknown Watcher: " + message;
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-    </script>
 </body>
 </html>
