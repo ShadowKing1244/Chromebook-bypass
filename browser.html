@@ -52,7 +52,7 @@
 </head>
 <body>
     <div class="browser-container">
-        <input type="text" id="searchInput" class="search-bar" placeholder="Search in Schoology or Yahoo">
+        <input type="text" id="searchInput" class="search-bar" placeholder="Search in Schoology">
         <button class="search-button" onclick="search()">Search</button>
         <iframe class="schoology-iframe" src="https://www.schoology.com"></iframe>
     </div>
@@ -61,14 +61,29 @@
         function search() {
             var query = document.getElementById('searchInput').value.trim();
             if (query !== "") {
-                var searchUrl = "https://search.yahoo.com/search?p=" + encodeURIComponent(query);
-                loadUrlInIframe(searchUrl);
+                var iframe = document.querySelector('.schoology-iframe');
+                switch (query.toLowerCase()) {
+                    case "youtube":
+                        iframe.contentWindow.location.href = "https://www.youtube.com";
+                        break;
+                    case "insta":
+                    case "instagram":
+                        iframe.contentWindow.location.href = "https://www.instagram.com";
+                        break;
+                    case "netflix":
+                        iframe.contentWindow.location.href = "https://www.netflix.com";
+                        break;
+                    case "hulu":
+                        iframe.contentWindow.location.href = "https://www.hulu.com";
+                        break;
+                    case "chatgpt":
+                        iframe.contentWindow.location.href = "https://app.chatgpt.com";
+                        break;
+                    default:
+                        iframe.contentWindow.location.href = "https://www.schoology.com/search?query=" + encodeURIComponent(query);
+                        break;
+                }
             }
-        }
-
-        function loadUrlInIframe(url) {
-            var iframe = document.querySelector('.schoology-iframe');
-            iframe.src = url;
         }
     </script>
 </body>
