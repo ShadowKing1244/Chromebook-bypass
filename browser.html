@@ -3,50 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iMessage Chat Room with Camera</title>
+    <title>iMessage Clone with Camera</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #000;
+            color: #ff0000;
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
         }
 
-        .chat-container {
-            width: 800px;
-            height: 600px;
-            background-color: #fff;
+        #chat-container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #111;
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: row;
             overflow: hidden;
         }
 
-        .chat-section {
-            flex: 1;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .chat-header {
-            background-color: #007bff;
-            color: #fff;
-            padding: 10px;
-            text-align: center;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .chat-messages {
-            flex: 1;
-            overflow-y: scroll;
-            padding: 10px;
+        #chat-messages {
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
         }
 
         .message {
@@ -56,39 +35,51 @@
             max-width: 70%;
         }
 
-        .sender-name {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .message.sender {
-            background-color: #e5e5ea;
-            align-self: flex-start;
-        }
-
-        .message.receiver {
-            background-color: #d3f2cd;
+        .sender {
+            background-color: #222;
             align-self: flex-end;
         }
 
-        .message-content {
-            word-wrap: break-word;
+        .receiver {
+            background-color: #333;
+            align-self: flex-start;
         }
 
-        .chat-input {
+        #video-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        video {
+            width: 320px;
+            height: 240px;
+            margin-right: 10px;
+            border-radius: 5px;
+            background-color: #000;
+        }
+
+        #local-video {
+            display: none;
+        }
+
+        #chat-input {
+            padding: 10px;
             display: flex;
             align-items: center;
         }
 
-        .input-field {
+        #message-input {
             flex: 1;
             padding: 8px;
             border: 1px solid #ccc;
             border-radius: 5px;
             margin-right: 10px;
+            background-color: #111;
+            color: #ff0000;
         }
 
-        .send-button {
+        button {
             background-color: #007bff;
             color: #fff;
             border: none;
@@ -97,102 +88,64 @@
             cursor: pointer;
         }
 
-        .camera-button {
-            background-color: #28a745;
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        video {
-            width: 100%;
-            max-width: 400px;
-            border-radius: 10px;
-            margin-bottom: 10px;
+        button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
-    <div class="chat-container">
-        <div class="chat-section">
-            <div class="chat-header">iMessage Chat</div>
-            <div class="chat-messages" id="chat-messages"></div>
-            <div class="chat-input">
-                <input type="text" id="name-input" class="input-field" placeholder="Enter your name...">
-                <input type="text" id="message-input" class="input-field" placeholder="Type a message...">
-                <button onclick="toggleCamera()" class="camera-button">Turn On Camera</button>
-                <button onclick="sendMessage()" class="send-button">Send</button>
-            </div>
+    <div id="chat-container">
+        <div id="chat-messages"></div>
+        <div id="video-container">
+            <video id="local-video" autoplay muted></video>
+            <video id="remote-video" autoplay></video>
         </div>
-        <div class="chat-section">
-            <div class="chat-header">Your Camera Feed</div>
-            <video id="own-video" autoplay style="display:none;"></video>
-            <div class="chat-header">Other User's Camera Feed</div>
-            <video id="remote-video" autoplay style="display:none;"></video>
+        <div id="chat-input">
+            <input type="text" id="message-input" placeholder="Type a message...">
+            <button onclick="sendMessage()">Send</button>
+            <button onclick="toggleCamera()">Turn On Camera</button>
         </div>
     </div>
-
     <script>
-        var ownVideo = document.getElementById('own-video');
-        var remoteVideo = document.getElementById('remote-video');
+        var localVideo = document.getElementById("local-video");
+        var remoteVideo = document.getElementById("remote-video");
         var cameraEnabled = false;
+        var localStream = null;
 
-        function startCamera() {
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(function(stream) {
-                    ownVideo.srcObject = stream;
-                    ownVideo.style.display = 'block';
+        async function toggleCamera() {
+            if (!cameraEnabled) {
+                try {
+                    localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                    localVideo.srcObject = localStream;
                     cameraEnabled = true;
-                })
-                .catch(function(error) {
-                    console.error('Error accessing the camera:', error);
-                });
-        }
-
-        function toggleCamera() {
-            if (cameraEnabled) {
-                ownVideo.srcObject.getTracks().forEach(track => track.stop());
-                ownVideo.srcObject = null;
-                ownVideo.style.display = 'none';
-                cameraEnabled = false;
+                    document.getElementById("local-video").style.display = "block";
+                    document.getElementById("remote-video").style.display = "none";
+                } catch (err) {
+                    console.error("Error accessing camera:", err);
+                }
             } else {
-                startCamera();
+                if (localStream) {
+                    localStream.getTracks().forEach(track => track.stop());
+                    localVideo.srcObject = null;
+                    cameraEnabled = false;
+                    document.getElementById("local-video").style.display = "none";
+                }
             }
         }
 
         function sendMessage() {
-            var nameInput = document.getElementById("name-input");
             var messageInput = document.getElementById("message-input");
-            var name = nameInput.value.trim();
             var message = messageInput.value.trim();
 
-            if (name !== "" && message !== "") {
+            if (message !== "") {
                 var chatMessages = document.getElementById("chat-messages");
                 var messageDiv = document.createElement("div");
-                messageDiv.classList.add("message");
-
-                if (!nameInput.dataset.color) {
-                    nameInput.dataset.color = getRandomColor();
-                }
-                var color = nameInput.dataset.color;
-
-                messageDiv.innerHTML = `<div class="sender-name" style="color: ${color}">${name}</div>` +
-                                        `<div class="message-content">${message}</div>`;
+                messageDiv.classList.add("message", "sender");
+                messageDiv.textContent = message;
                 chatMessages.appendChild(messageDiv);
                 messageInput.value = "";
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }
-        }
-
-        function getRandomColor() {
-            var letters = '0123456789ABCDEF';
-            var color = '#';
-            for (var i = 0; i < 6; i++) {
-                color += letters[Math.floor(Math.random() * 16)];
-            }
-            return color;
         }
     </script>
 </body>
