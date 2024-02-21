@@ -54,30 +54,9 @@
             font-weight: bold;
         }
 
-        .transaction .date {
-            color: #999;
-        }
-
         .transaction .type {
             font-size: 14px;
             text-transform: uppercase;
-        }
-
-        .transaction .status {
-            font-size: 14px;
-            color: #35b7c7;
-        }
-
-        .transaction .status.pending {
-            color: #f90;
-        }
-
-        .transaction .status.failed {
-            color: #f00;
-        }
-
-        .transaction .status.completed {
-            color: #0c0;
         }
 
         .footer {
@@ -105,29 +84,65 @@
         <div class="header">
             <h1>Cash App</h1>
         </div>
-        <div class="balance">
+        <div class="balance" id="balanceDisplay">
             Your Balance: $500.00
         </div>
-        <div class="transactions">
-            <div class="transaction">
-                <div class="details">
-                    <div class="type">Payment received</div>
-                    <div class="date">2 hours ago</div>
-                </div>
-                <div class="amount">+$50.00</div>
-            </div>
-            <div class="transaction">
-                <div class="details">
-                    <div class="type">Payment sent</div>
-                    <div class="date">Yesterday</div>
-                </div>
-                <div class="amount">-$20.00</div>
-            </div>
-            <!-- Add more transactions here -->
+        <div class="transactions" id="transactionLog">
+            <!-- Transaction log will be displayed here -->
         </div>
         <div class="footer">
-            <button class="button">Send Money</button>
+            <button class="button" onclick="sendMoney()">Send Money</button>
         </div>
     </div>
+
+    <script>
+        var balance = 500.00; // Starting balance
+        var balanceDisplay = document.getElementById('balanceDisplay');
+        var transactionLog = document.getElementById('transactionLog');
+
+        // Function to format currency
+        function formatCurrency(amount) {
+            return '$' + amount.toFixed(2);
+        }
+
+        // Function to display transaction in the log
+        function displayTransaction(type, amount) {
+            var transaction = document.createElement('div');
+            transaction.classList.add('transaction');
+
+            var details = document.createElement('div');
+            details.classList.add('details');
+            details.innerHTML = '<div class="type">' + type + '</div><div class="date">' + new Date().toLocaleString() + '</div>';
+            
+            var amountElement = document.createElement('div');
+            amountElement.classList.add('amount');
+            amountElement.textContent = formatCurrency(amount);
+
+            transaction.appendChild(details);
+            transaction.appendChild(amountElement);
+            transactionLog.prepend(transaction);
+        }
+
+        // Function to simulate sending money
+        function sendMoney() {
+            var amount = Math.random() * 100 + 1; // Random amount between 1 and 100
+            balance -= amount; // Deduct amount from balance
+            displayTransaction('Payment sent', -amount);
+            updateBalance();
+        }
+
+        // Function to update balance display
+        function updateBalance() {
+            balanceDisplay.textContent = 'Your Balance: ' + formatCurrency(balance);
+        }
+
+        // Increase balance every 1.5 seconds
+        setInterval(function() {
+            var increment = Math.random() * 10 + 1; // Random increment between 1 and 10
+            balance += increment; // Increment balance
+            displayTransaction('Balance increased', increment);
+            updateBalance();
+        }, 1500);
+    </script>
 </body>
 </html>
